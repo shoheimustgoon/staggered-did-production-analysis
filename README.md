@@ -1,7 +1,11 @@
-# Impact Analysis of Manufacturing Equipment Upgrade (Staggered DiD & Survival Analysis)
+# Impact Analysis of Manufacturing Equipment Upgrade (Staggered DiD & Event Study)
 
 ## 📖 Overview
 This project is a Python-based analytical framework designed to verify the effectiveness of new equipment components in a manufacturing environment. It addresses complex real-world conditions such as **staggered installation dates** and **varying equipment utilization rates**.
+
+It includes two complementary analytical approaches:
+1.  **Static Analysis:** Survival Analysis & Standard Staggered DiD.
+2.  **Dynamic Analysis:** Event Study (Dynamic DiD) to visualize trends over time.
 
 To ensure data confidentiality, this project uses a **"Bread Factory" analogy** to demonstrate the analytical logic without exposing sensitive production data.
 
@@ -10,37 +14,34 @@ To ensure data confidentiality, this project uses a **"Bread Factory" analogy** 
 ## 🥐 The Analogy: The Bread Factory
 
 ### The Context
-- **The Factory:** A large factory producing bread with 20 industrial ovens (Tools).
+- **The Factory:** A large factory producing bread with 20-40 industrial ovens (Tools).
 - **The Upgrade:** A new "AI Temperature Controller" was installed to prevent bread from burning (Failures).
-- **The Goal:** To statistically prove that the new controller reduces the failure rate and extends the time between failures.
+- **The Goal:** To statistically prove that the new controller reduces the failure rate.
 
 ### The Challenges
-
-#### 1. Varying Utilization Rates
-- **Problem:** Oven A runs 24 hours a day. Oven B runs only 2 hours a day.
-- **Why simple MTBF fails:** If we measure "Time Between Failures" using simple clock hours, Oven B appears to have a very long life simply because it is rarely used. This is unfair.
-- **Solution:** We introduced the concept of **"Effective Denominator"**. Instead of measuring time, we measure **"Loaves Baked" (Production Count)**. We calculate the survival rate based on how much work the oven actually performed.
-
-#### 2. Staggered Installation
-- **Problem:** The new controllers were not installed on all ovens at once. Some got them in January, some in March, and others in June.
-- **Solution:** We use **Staggered Difference-in-Differences (DiD)** analysis. This allows us to compare the "Treatment Group" (Upgraded) vs. "Control Group" (Old) correctly, even when the "After" period starts at different times for each oven.
+1.  **Varying Utilization:** Oven A runs 24/7, while Oven B runs only 2 hours. Simple "Time Between Failures" is unfair.
+    - *Solution:* We normalize metrics using **"Effective Denominator"** (Production Count / Wafer Count).
+2.  **Staggered Installation:** Controllers were installed at different times (Jan, Mar, Jun...).
+    - *Solution:* We align data using **Relative Time ($K$)** and use Staggered DiD / Event Study models.
 
 ---
 
-## 🛠 Methodology
+## 🛠 Included Scripts & Methodology
 
-### 1. Data Processing with Utilization Weighting
-Calculates utilization rates based on daily production logs. Converts "Calendar Time" into "Normalized Operating Hours" or uses "Production Count" directly as the duration metric.
+### 1. `main_analysis.py` (Static Analysis)
+Focuses on quantifying the overall effect and survival probability.
+- **Survival Analysis (Lifelines):**
+    - Kaplan-Meier curves based on production volume.
+    - Cox Proportional Hazards & Weibull AFT models to estimate risk reduction.
+- **Staggered DiD (GLM-NB):**
+    - Negative Binomial Regression to estimate the overall Rate Ratio (RR).
 
-### 2. Survival Analysis (Lifelines)
-- **Kaplan-Meier Estimator:** Visualizes the survival curve (probability of running without failure) based on production volume.
-- **Cox Proportional Hazards Model:** Quantifies the hazard ratio (risk reduction).
-- **Weibull AFT (Accelerated Failure Time) Model:** Estimates the acceleration factor (how much the lifespan is extended).
-
-### 3. Staggered DiD (Statsmodels)
-- Uses **Generalized Linear Models (GLM)** with **Negative Binomial Distribution** to handle count data (rare failure events).
-- Verifies **Parallel Trends** assumption to ensure causal validity.
-- Calculates the pure effect of the upgrade on error rates.
+### 2. `main_event_study.py` (Dynamic Analysis)
+Focuses on visualizing the timing of the effect.
+- **Event Study (PanelOLS):**
+    - Visualizes the causal impact trend before and after installation.
+    - **Parallel Trend Check:** Verifies if the pre-installation trend ($K < 0$) is flat (validating the causal assumption).
+    - **Dynamics:** Shows whether the improvement is immediate or gradual ($K \ge 0$).
 
 ---
 
@@ -48,20 +49,25 @@ Calculates utilization rates based on daily production logs. Converts "Calendar 
 
 ### Prerequisites
 - Python 3.8+
-- Libraries: `pandas`, `numpy`, `matplotlib`, `seaborn`, `lifelines`, `statsmodels`
+- Libraries: `pandas`, `numpy`, `matplotlib`, `seaborn`, `lifelines`, `statsmodels`, `linearmodels`
 
 ### Running the Analysis
-The script includes a **Dummy Data Generator**, so you can run it immediately without external data.
+Both scripts contain a **Dummy Data Generator**, so they can be executed immediately.
 
+#### Run Static Analysis (Survival & DiD)
 ```bash
 python main_analysis.py
 ````
 
-This will generate:
+*Outputs: `survival_plot.png`, `did_trend_plot.png`, Statistical Summaries*
 
-1.  **Dummy Data:** Installation logs, Production logs, Error logs.
-2.  **Analysis Report:** Utilization metrics, Survival Analysis results, and DiD statistics.
-3.  **Visualizations:** `survival_plot.png`, `did_trend_plot.png`.
+#### Run Dynamic Analysis (Event Study)
+
+```bash
+python main_event_study.py
+```
+
+*Outputs: `event_study_Norm_Count_Rate.png`, `event_study_Norm_MTBF.png`*
 
 -----
 
@@ -69,17 +75,27 @@ This will generate:
 
 **Go Sato**
 Data Analyst | Production Engineering
-Specializing in statistical analysis for manufacturing process improvement.
+Specializing in Causal Inference, Survival Analysis, and Reliability Engineering.
+
+<br>
+<br>
+
+-----
 
 ## 🇯🇵 日本語の説明 (Japanese Description Follows)
 
 -----
 
-# 製造装置のアップグレードによる導入効果分析（Staggered DiD および 生存時間分析）
+# 製造装置のアップグレードによる導入効果分析（Staggered DiD および Event Study）
 
 ## 📖 概要
 
 本プロジェクトは、製造現場における新規コンポーネントの導入効果を検証するためのPython分析フレームワークです。**導入時期が装置ごとに異なる点**や、**装置ごとの稼働率のばらつき**といった、実世界の複雑な条件に対応しています。
+
+以下の2つの補完的な分析アプローチを含みます：
+
+1.  **静的分析:** 生存時間分析 および 通常の Staggered DiD。
+2.  **動的分析:** 効果の時系列変化を可視化する Event Study（動的DiD）。
 
 機密保持のため、本プロジェクトでは\*\*「パン工場」のたとえ話\*\*を用いて、実際の製造データを使わずに分析ロジックを実証しています。
 
@@ -87,72 +103,54 @@ Specializing in statistical analysis for manufacturing process improvement.
 
 ## 🥐 たとえ話：パン工場
 
-### 背景
+### 背景と課題
 
-  - **工場:** 20台の工業用オーブン（装置）を持つ大規模なパン工場。
-  - **アップグレード:** パンが焦げる（故障）のを防ぐため、新しい「AI温度制御器」を導入。
-  - **目的:** 新しい制御器が故障率を下げ、故障間隔を延ばしていることを統計的に証明すること。
+パンが焦げる（故障）のを防ぐため、オーブンに「AI温度制御器」を導入しました。しかし、以下の課題により単純な比較ができません。
 
-### 課題
-
-#### 1\. 稼働率のばらつき
-
-  - **問題点:** オーブンAは24時間フル稼働ですが、オーブンBは1日2時間しか稼働しません。
-  - **単純なMTBFの失敗:** 単純な「時間」で故障間隔を測ると、滅多に使われないオーブンBが長寿命であるかのように見えてしまいます。これは不公平です。
-  - **解決策:** \*\*「実効分母 (Effective Denominator)」**の概念を導入しました。時間ではなく**「焼いたパンの数（生産数）」\*\*を基準にします。オーブンが実際にどれだけの仕事をしたかに基づいて生存率を計算します。
-
-#### 2\. 導入時期のずれ (Staggered Installation)
-
-  - **問題点:** 新しい制御器は一斉に導入されたわけではありません。1月に導入されたものもあれば、3月、6月のものもあります。
-  - **解決策:** \*\*Staggered DiD（時期不一致の差分の差分法）\*\*を使用しました。これにより、各オーブンで「導入後」の開始時期が異なっていても、処置群（導入済み）と対照群（未導入）を正しく比較することができます。
+1.  **稼働率のばらつき:** フル稼働のオーブンと、たまにしか使わないオーブンを「時間」で比較するのは不公平です。
+      - *解決策:* **「実効分母（Effective Denominator）」**（生産数/Wafer枚数）を用いて指標を正規化します。
+2.  **導入時期のずれ:** 1月導入、3月導入などバラバラです。
+      - *解決策:* **相対時間 ($K$)** を用いた Staggered DiD モデルで評価します。
 
 -----
 
-## 🛠 分析手法
+## 🛠 収録スクリプトと分析手法
 
-### 1\. 稼働率による重み付けデータ処理
+### 1\. `main_analysis.py`（静的分析）
 
-日々の生産ログに基づいて稼働率を算出します。「カレンダー時間」を「正規化された稼働時間」に変換するか、あるいは「生産数」そのものを期間の指標として使用します。
+全体的な効果量と生存確率の推定に焦点を当てています。
 
-### 2\. 生存時間分析 (Lifelines)
+  - **生存時間分析:** 生産量ベースのカプラン・マイヤー曲線、Cox比例ハザードモデルによるリスク低減率の算出。
+  - **Staggered DiD:** 負の二項分布モデルを用いた、導入による全体的な改善率（Rate Ratio）の推定。
 
-  - **カプラン・マイヤー推定:** 生産量に基づく生存曲線（故障せずに稼働し続ける確率）を可視化。
-  - **Cox比例ハザードモデル:** ハザード比（リスク低減率）を定量化。
-  - **Weibull AFT（加速寿命）モデル:** 加速係数（寿命がどれだけ延びたか）を推定。
+### 2\. `main_event_study.py`（動的分析）
 
-### 3\. Staggered DiD (Statsmodels)
+効果のタイミングとトレンドの可視化に焦点を当てています。
 
-  - **負の二項分布**を用いた\*\*一般化線形モデル（GLM）\*\*を使用し、カウントデータ（稀な故障イベント）を適切に扱います。
-  - \*\*平行トレンド（Parallel Trends）\*\*の仮定を検証し、因果推論の妥当性を担保します。
-  - アップグレードによるエラー率への純粋な効果を算出します。
+  - **イベントスタディ (PanelOLS):** 導入前後における効果の推移を可視化します。
+  - **平行トレンドの検証:** 導入前 ($K < 0$) の係数が0付近であれば、比較が妥当であると判断できます。
+  - **効果の持続性:** 導入後 ($K \ge 0$)、効果が即座に出るか、徐々に出るかを確認できます。
 
 -----
 
 ## 💻 使用方法
 
-### 必須環境
-
-  - Python 3.8以上
-  - ライブラリ: `pandas`, `numpy`, `matplotlib`, `seaborn`, `lifelines`, `statsmodels`
-
 ### 実行
 
-スクリプトには**ダミーデータ生成機能**が含まれているため、外部データなしですぐに実行可能です。
+どちらのスクリプトも**ダミーデータ生成機能**を含んでいるため、外部データなしですぐに実行可能です。
 
 ```bash
+# 静的分析（生存分析・DiD）の実行
 python main_analysis.py
+
+# 動的分析（イベントスタディ）の実行
+python main_event_study.py
 ```
-
-実行すると以下が生成されます：
-
-1.  **ダミーデータ:** 導入ログ、生産ログ、エラーログ。
-2.  **分析レポート:** 稼働率指標、生存時間分析結果、DiD統計量。
-3.  **可視化グラフ:** `survival_plot.png`, `did_trend_plot.png`。
 
 -----
 
 ## 👨‍💻 著者
 
-**佐藤剛**
+**佐藤 剛 (Go Sato)**
 データアナリスト | 生産技術
-製造プロセスの改善に向けた統計分析を専門としています。
+因果推論、生存時間分析、および信頼性工学を専門としています。
