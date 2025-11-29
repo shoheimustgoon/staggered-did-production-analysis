@@ -22,7 +22,7 @@ To ensure data confidentiality, this project uses a **"Bread Factory" analogy** 
 
 ### The Challenges
 1.  **Varying Utilization:** Oven A runs 24/7, while Oven B runs only 2 hours. Simple "Time Between Failures" is unfair.
-    - *Solution:* We normalize metrics using **"Effective Denominator"** (Production Count / **Production Volume**).
+    - *Solution:* We normalize metrics using **"Effective Denominator"** (Production Count / Production Volume).
 2.  **Staggered Installation:** Controllers were installed at different times (Jan, Mar, Jun...).
     - *Solution:* We align data using **Relative Time ($K$)** and use Staggered DiD / Event Study models.
 
@@ -81,7 +81,7 @@ python main_event_study.py
 ## 👨‍💻 Author
 
 **Go Sato**
-Data Analyst | Production Engineering
+Data Scientist | AI Department, Semiconductor Equipment Manufacturer
 Specializing in Causal Inference, Survival Analysis, and Reliability Engineering.
 
 <br>
@@ -116,7 +116,7 @@ Specializing in Causal Inference, Survival Analysis, and Reliability Engineering
 パンが焦げる（故障）のを防ぐため、オーブンに「AI温度制御器」を導入しました。しかし、以下の課題により単純な比較ができません。
 
 1.  **稼働率のばらつき:** フル稼働のオーブンと、たまにしか使わないオーブンを「時間」で比較するのは不公平です。
-      - *解決策:* **「実効分母（Effective Denominator）」**（生産数/**生産数**）を用いて指標を正規化します。
+      - *解決策:* **「実効分母（Effective Denominator）」**（生産数/生産数）を用いて指標を正規化します。
 2.  **導入時期のずれ:** 1月導入、3月導入などバラバラです。
       - *解決策:* **相対時間 ($K$)** を用いた Staggered DiD モデルで評価します。
 
@@ -138,7 +138,7 @@ Staggered実装の核は、介入を示す `Post` 変数（介入後を示す）
 
 #### その他の分析 (`main_analysis.py`内)
 
-  - **生存時間分析:** WBF（**生産数**）を期間の指標として使用し、リスク低減（Cox PH）および寿命延長（Weibull AFT）を測定します。
+  - **生存時間分析:** WBF（生産数）を期間の指標として使用し、リスク低減（Cox PH）および寿命延長（Weibull AFT）を測定します。
 
 ### 2\. `main_event_study.py`（動的分析）
 
@@ -146,7 +146,7 @@ Staggered実装の核は、介入を示す `Post` 変数（介入後を示す）
 
   - **イベントスタディ (PanelOLS):** 導入前後における効果の推移を可視化します。
   - **平行トレンドの検証:** 導入前 ($K < 0$) の係数が0付近であれば、比較が妥当であると判断できます。
-  - **効果の持続性:** 導入後 ($K \ge 0$)、効果が即座に出るか、徐々に出るかを確認できます。
+  - **効果の持続性:** 導入後 ($K \ge 0$)、効果が即座に出るか、徐々に増えるかを確認できます。
 
 -----
 
@@ -166,8 +166,8 @@ python main_event_study.py
 
 -----
 
-## 👨‍💻 著者
+## 👨‍💻 Author
 
 **佐藤 剛 (Go Sato)**
-データアナリスト | 生産技術
+データサイエンティスト | 外資系半導体装置メーカー AI部
 因果推論、生存時間分析、および信頼性工学を専門としています。
