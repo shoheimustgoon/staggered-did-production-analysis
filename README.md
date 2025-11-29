@@ -22,7 +22,7 @@ To ensure data confidentiality, this project uses a **"Bread Factory" analogy** 
 
 ### The Challenges
 1.  **Varying Utilization:** Oven A runs 24/7, while Oven B runs only 2 hours. Simple "Time Between Failures" is unfair.
-    - *Solution:* We normalize metrics using **"Effective Denominator"** (Production Count / Wafer Count).
+    - *Solution:* We normalize metrics using **"Effective Denominator"** (Production Count).
 2.  **Staggered Installation:** Controllers were installed at different times (Jan, Mar, Jun...).
     - *Solution:* We align data using **Relative Time ($K$)** and use Staggered DiD / Event Study models.
 
@@ -111,7 +111,7 @@ Specializing in Causal Inference, Survival Analysis, and Reliability Engineering
 パンが焦げる（故障）のを防ぐため、オーブンに「AI温度制御器」を導入しました。しかし、以下の課題により単純な比較ができません。
 
 1.  **稼働率のばらつき:** フル稼働のオーブンと、たまにしか使わないオーブンを「時間」で比較するのは不公平です。
-      - *解決策:* **「実効分母（Effective Denominator）」**（生産数/Wafer枚数）を用いて指標を正規化します。
+      - *解決策:* **「実効分母（Effective Denominator）」**（生産数）を用いて指標を正規化します。
 2.  **導入時期のずれ:** 1月導入、3月導入などバラバラです。
       - *解決策:* **相対時間 ($K$)** を用いた Staggered DiD モデルで評価します。
 
