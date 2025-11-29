@@ -1,5 +1,7 @@
 # Impact Analysis of Manufacturing Equipment Upgrade (Staggered DiD & Event Study)
 
+> **[🇯🇵 日本語の説明はこちら (Click here for Japanese Description)](#japanese-description)**
+
 ## 📖 Overview
 This project is a Python-based analytical framework designed to verify the effectiveness of new equipment components in a manufacturing environment. It addresses complex real-world conditions such as **staggered installation dates** and **varying equipment utilization rates**.
 
@@ -79,10 +81,12 @@ Specializing in Causal Inference, Survival Analysis, and Reliability Engineering
 
 <br>
 <br>
+<br>
+&lt;span id=&quot;japanese-description&quot;&gt;&lt;/span&gt;
 
 -----
 
-## 🇯🇵 日本語の説明 (Japanese Description Follows)
+## 🇯🇵 日本語の説明 (Japanese Description)
 
 -----
 
@@ -154,3 +158,9 @@ python main_event_study.py
 **佐藤 剛 (Go Sato)**
 データアナリスト | 生産技術
 因果推論、生存時間分析、および信頼性工学を専門としています。
+
+```
+
+### 修正のポイント
+日本語の説明文の直前に、見えない目印（`<span id="japanese-description"></span>`）を埋め込みました。これにより、冒頭のリンクをクリックすると確実にここまでスクロールされるようになります。
+```
