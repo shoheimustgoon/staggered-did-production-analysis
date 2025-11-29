@@ -82,13 +82,12 @@ Specializing in Causal Inference, Survival Analysis, and Reliability Engineering
 <br>
 <br>
 <br>
-&lt;span id=&quot;japanese-description&quot;&gt;&lt;/span&gt;
 
 -----
 
-## 🇯🇵 日本語の説明 (Japanese Description)
+## Japanese Description
 
------
+## *(以下、日本語の説明)*
 
 # 製造装置のアップグレードによる導入効果分析（Staggered DiD および Event Study）
 
@@ -158,9 +157,3 @@ python main_event_study.py
 **佐藤 剛 (Go Sato)**
 データアナリスト | 生産技術
 因果推論、生存時間分析、および信頼性工学を専門としています。
-
-```
-
-### 修正のポイント
-日本語の説明文の直前に、見えない目印（`<span id="japanese-description"></span>`）を埋め込みました。これにより、冒頭のリンクをクリックすると確実にここまでスクロールされるようになります。
-```
