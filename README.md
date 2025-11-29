@@ -1,4 +1,4 @@
-# Impact Analysis of Manufacturing Equipment Upgrade (Staggered DiD & Event Study)
+# Impact Analysis of Manufacturing Equipment Upgrade (Survival, Staggered DiD & Event Study)
 
 > **[🇯🇵 日本語の説明はこちら (Click here for Japanese Description)](#japanese-description)**
 
@@ -95,7 +95,7 @@ Specializing in Causal Inference, Survival Analysis, and Reliability Engineering
 
 -----
 
-# 製造装置のアップグレードによる導入効果分析（Staggered DiD および Event Study）
+# 製造装置の導入効果分析（生存分析、Staggered DiD & イベントスタディ）
 
 ## 📖 概要
 
