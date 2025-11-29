@@ -129,7 +129,7 @@ class EffectAnalyzer:
         Instead of 'Time Between Failures', we calculate 'Work (Production) Between Failures'.
         This normalizes the varying utilization rates across tools.
         """
-        print("\n[Step 1] Calculating Utilization & WBF (Work/Wafer Between Failures)...")
+        print("\n[Step 1] Calculating Utilization & WBF (Work Between Failures)...")
         
         # Calculate Global Average Throughput (Units per Hour) for normalization reference
         global_avg_daily_prod = self.df_prod['Production_Count'].mean()
@@ -171,7 +171,7 @@ class EffectAnalyzer:
         [Step 2] Survival Analysis (Cox & AFT)
         Uses 'WBF_Units' (Production count) as the duration variable.
         """
-        print("\n[Step 2] Running Survival Analysis (Cox PH & AFT)...")
+        print("\n[Step 2] Running Survival Analysis (Cox PH & AFT) on WBF...")
         
         df = self.processed_data.copy()
         df['Group'] = df['Is_Intro'].apply(lambda x: 'New_Device' if x else 'Old_Device')
