@@ -17,7 +17,21 @@ To ensure data confidentiality, this project uses a **"Bread Factory" analogy** 
 ---
 
 ## 🥐 The Analogy: The Bread Factory
-... (Unchanged English Analogy) ...
+
+### Background and Challenges
+We installed an "AI Temperature Controller" on ovens to prevent bread from burning (Failures). However, simple comparison is difficult due to the following challenges:
+
+#### The Flawed Assumption and the Path to the Solution
+We initially ran the DiD analysis assuming all ovens were always operating. **However, we realized the results were unstable and incorrect.** This was because the fundamental **premise (utilization)**—that all units were operating equally—was flawed.
+
+To solve the challenge of determining the varying utilization rates, we devised the **"Effective Denominator"** based on **Wafer Count (Loaves Baked)** to overcome this bias.
+
+1.  **Varying Utilization:** Comparing a full-time running oven to an infrequently used one based on clock time is unfair.
+    - *Solution:* We derive **Normalized MTBF**. We normalize MTBF using the **"Effective Denominator"** (Production Count / Production Count).
+2.  **Staggered Installation:** Installations varied (e.g., January, March).
+    - *Solution:* We evaluate using a Staggered DiD model utilizing **Relative Time ($K$)**.
+
+---
 
 ### The Challenges
 1.  **Varying Utilization:** Oven A runs 24/7, while Oven B runs only 2 hours. Simple "Time Between Failures" is unfair.
@@ -65,9 +79,18 @@ Focuses on visualizing the timing of the effect and checking the Parallel Trend 
 ---
 
 ## 💻 Usage
-... (Unchanged English Usage) ...
+## 💻 Usage
 
----
+### Prerequisites
+- Python 3.8+
+- Libraries: `pandas`, `numpy`, `matplotlib`, `seaborn`, `lifelines`, `statsmodels`, `linearmodels`
+
+### Running the Analysis
+Both scripts contain a **Dummy Data Generator**, so they can be executed immediately.
+
+#### Run Survival Analysis (KMF, Cox, AFT)
+```bash
+python main_survival_analysis.py
 
 ## 👨‍💻 Author
 **Go Sato**
@@ -99,7 +122,19 @@ Specializing in Causal Inference, Survival Analysis, and Reliability Engineering
 ---
 
 ## 🥐 たとえ話：パン工場
-... (Unchanged Japanese Analogy) ...
+
+### 背景と課題
+パンが焦げる（故障）のを防ぐため、オーブンに「AI温度制御器」を導入しました。しかし、以下の課題により単純な比較ができません。
+
+#### 誤った仮定と解決への経緯
+当初、すべてのオーブンが常に稼働していると仮定してDiD分析を行ったところ、**結果が不安定でおかしいことに気づきました。**これは、すべての装置が等しく稼働しているという**前提（稼働率）が間違っていた**ためです。
+
+この稼働率の違いをどう求めるかという課題に対し、**Wafer Count（パンの製造数）**を基に**「実効分母（Effective Denominator）」**を編み出すことで、バイアスを克服しました。
+
+1.  **稼働率のばらつき:** フル稼働のオーブンと、たまにしか使わないオーブンを「時間」で比較するのは不公平です。
+    - *解決策:* **Normalized MTBF**を導出します。**「実効分母（Effective Denominator）」**（生産数/生産数）を用いてMTBFを正規化します。
+2.  **導入時期のずれ:** 1月導入、3月導入などバラバラです。
+    - *解決策:* **相対時間 ($K$)** を用いた Staggered DiD モデルで評価します。
 
 ---
 
@@ -143,8 +178,19 @@ TWFEモデルは、パネルデータ（装置×時間）における**未観測
 ---
 
 ## 💻 Usage
-... (Unchanged Japanese Usage) ...
+実行
+どちらのスクリプトもダミーデータ生成機能を含んでいるため、外部データなしですぐに実行可能です。
 
+Bash
+
+# 生存分析（KMF, Cox, AFT）の実行
+python main_survival_analysis.py
+
+# 静的DiD分析の実行
+python main_analysis.py
+
+# 動的分析（イベントスタディ）の実行
+python main_event_study.py
 ---
 
 ## 👨‍💻 Author
