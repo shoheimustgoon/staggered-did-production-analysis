@@ -79,7 +79,6 @@ Focuses on visualizing the timing of the effect and checking the Parallel Trend 
 ---
 
 ## 💻 Usage
-## 💻 Usage
 
 ### Prerequisites
 - Python 3.8+
