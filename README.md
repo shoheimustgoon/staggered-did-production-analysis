@@ -5,8 +5,10 @@
 ## 📖 Overview
 This project is a Python-based analytical framework designed to verify the effectiveness of new equipment components in a manufacturing environment. It addresses complex real-world conditions such as **staggered installation dates** and **varying equipment utilization rates**.
 
+The core survival technique (Cox PH/AFT) is directly applicable to medical/pharmaceutical analysis (Time-to-Event), such as assessing drug efficacy and patient survival.
+
 It includes three complementary analytical approaches:
-1.  **Survival Analysis:** KMF, Cox PH, and AFT models using **MTBF** corrected for utilization.
+1.  **Survival Analysis:** KMF, Cox PH, and AFT models using utilization-corrected metrics.
 2.  **Static DiD Analysis:** Standard DiD (OLS/GLM) for overall effect quantification.
 3.  **Dynamic DiD Analysis:** Event Study for trend visualization.
 
@@ -15,11 +17,7 @@ To ensure data confidentiality, this project uses a **"Bread Factory" analogy** 
 ---
 
 ## 🥐 The Analogy: The Bread Factory
-
-### The Context
-- **The Factory:** A large factory producing bread with 20-40 industrial ovens (Tools).
-- **The Upgrade:** A new "AI Temperature Controller" was installed to prevent bread from burning (Failures).
-- **The Goal:** To statistically prove that the new controller reduces the failure rate.
+... (Unchanged English Analogy) ...
 
 ### The Challenges
 1.  **Varying Utilization:** Oven A runs 24/7, while Oven B runs only 2 hours. Simple "Time Between Failures" is unfair.
@@ -34,17 +32,27 @@ To ensure data confidentiality, this project uses a **"Bread Factory" analogy** 
 ### 1. `main_survival_analysis.py` (Survival Analysis)
 Focuses on the duration metric and risk modeling. This script uses **MTBF (Mean Time Between Failures)** corrected for utilization as the primary duration metric.
 
-#### 右打ち切り（Right-Censoring）の考慮
-分析では、**右打ち切り**のデータを考慮しています。右打ち切りとは、観測終了時点までに故障（イベント）が発生しなかった場合を指します。これらのデータも `Event = 0` として組み込むことで、母集団のリスクを正確に推定し、バイアスを防いでいます。
+#### Right-Censoring Logic
+The analysis incorporates **Right-Censoring**, which is vital for unbiased results. Censoring occurs when a unit (oven) is still functional when the observation period ends. In the analysis, these data points are included with an `Event = 0` flag to correctly estimate the population risk and survival curve.
 
-| Model | Goal (English) | Role in this Project (Japanese) |
+#### Survival Models and Interpretation
+| Model | Goal | Role in this Project |
 | :--- | :--- | :--- |
-| **KMF** (Kaplan-Meier) | Estimates the **Survival Function** (non-parametric). | **視覚的な比較:** 新旧デバイス間の**MTBF**（故障間隔）の分布をグラフで示します。 |
-| **Cox PH** (Proportional Hazards) | Estimates the **Hazard Ratio** (risk ratio, semi-parametric). | **リスク低減の定量化:** 新デバイス導入による**故障リスクの減少率**を推定します。 |
-| **Weibull AFT** (Accelerated Failure Time) | Estimates the **Acceleration Factor** (lifespan ratio, parametric). | **寿命の定量化:** 新デバイス導入による**MTBF**の延長率を推定します。 |
+| **KMF** (Kaplan-Meier) | Estimates the **Survival Function** (non-parametric). | **Visual Comparison:** Graphs the distribution of MTBF (time between failures) between new and old devices. |
+| **Cox PH** (Proportional Hazards) | Estimates the **Hazard Ratio** (risk ratio, semi-parametric). | **Risk Quantification:** Estimates the **reduction in failure risk** (Hazard Ratio < 1) from the new device. |
+| **Weibull AFT** (Accelerated Failure Time) | Estimates the **Acceleration Factor** (lifespan ratio, parametric). | **Lifespan Quantification:** Estimates the **MTBF extension rate** (Acceleration Factor > 1) from the new device. |
 
 ### 2. `main_analysis.py` (Static DiD Analysis)
-Focuses on quantifying the overall Average Treatment Effect (ATT) using the standard TWFE structure.
+Focuses on quantifying the overall Average Treatment Effect (ATT) using the standard **Two-Way Fixed Effects (TWFE)** structure.
+
+#### Two-Way Fixed Effects (TWFE) Details
+TWFE models are used for panel data to control for unobserved confounding variables.
+
+| Fixed Effect Type | Controls for Unobserved Factor | Application in this Project |
+| :--- | :--- | :--- |
+| **Entity Fixed Effects** | Unit-specific factors (e.g., environment, initial performance) | Controlled by **Tool/Group Fixed Effects** |
+| **Time Fixed Effects** | Factors common across all units at a given time (e.g., site-wide power failure, component delays) | Controlled by **Month/Date Fixed Effects** |
+
 - **Staggered DiD Implementation:** The core staggered logic (unit-specific `Post` variable timing) is applied to both OLS and GLM.
 - **Continuous Outcomes (MTBF):** Uses **OLS** regression.
 - **Count Outcomes (Rate):** Uses **Negative Binomial GLM** with the `log(Production)` offset for utilization normalization.
@@ -53,7 +61,6 @@ Focuses on quantifying the overall Average Treatment Effect (ATT) using the stan
 Focuses on visualizing the timing of the effect and checking the Parallel Trend assumption.
 - **Event Study (PanelOLS):** Visualizes the causal impact trend before and after installation.
 - **Parallel Trend Check:** Verifies if the pre-installation trend ($K < 0$) is flat (validating the causal assumption).
-- **Dynamics:** Shows whether the improvement is immediate or gradual ($K \ge 0$).
 
 ---
 
@@ -92,14 +99,7 @@ Specializing in Causal Inference, Survival Analysis, and Reliability Engineering
 ---
 
 ## 🥐 たとえ話：パン工場
-
-### 背景と課題
-パンが焦げる（故障）のを防ぐため、オーブンに「AI温度制御器」を導入しました。しかし、以下の課題により単純な比較ができません。
-
-1.  **稼働率のばらつき:** フル稼働のオーブンと、たまにしか使わないオーブンを「時間」で比較するのは不公平です。
-    - *解決策:* **Normalized MTBF**を導出します。**「実効分母（Effective Denominator）」**（生産数/生産数）を用いてMTBFを正規化します。
-2.  **導入時期のずれ:** 1月導入、3月導入などバラバラです。
-    - *解決策:* **相対時間 ($K$)** を用いた Staggered DiD モデルで評価します。
+... (Unchanged Japanese Analogy) ...
 
 ---
 
@@ -111,21 +111,33 @@ Specializing in Causal Inference, Survival Analysis, and Reliability Engineering
 #### 右打ち切り（Right-Censoring）の考慮
 分析では、**右打ち切り**のデータを考慮しています。右打ち切りとは、観測終了時点までに故障（イベント）が発生しなかった場合を指します。これらのデータも `Event = 0` として組み込むことで、母集団のリスクを正確に推定し、バイアスを防いでいます。
 
-| Model | Goal (English) | Role in this Project (Japanese) |
+#### 生存分析モデルの解釈
+| モデル | 目的 | プロジェクトでの役割 |
 | :--- | :--- | :--- |
-| **KMF** (Kaplan-Meier) | Estimates the **Survival Function** (non-parametric). | **視覚的な比較:** 新旧デバイス間の**MTBF**（故障間隔）の分布をグラフで示します。 |
-| **Cox PH** (Proportional Hazards) | Estimates the **Hazard Ratio** (risk ratio, semi-parametric). | **リスク低減の定量化:** 新デバイス導入による**故障リスクの減少率**を推定します。 |
-| **Weibull AFT** (Accelerated Failure Time) | Estimates the **Acceleration Factor** (lifespan ratio, parametric). | **寿命の定量化:** 新デバイス導入による**MTBF**の延長率を推定します。 |
+| **KMF** (Kaplan-Meier) | **生存関数**を推定（ノンパラメトリック）。 | **視覚的な比較:** 新旧デバイス間のMTBF（故障間隔）の分布をグラフで示します。 |
+| **Cox PH** (比例ハザード) | **ハザード比**を推定（セミパラメトリック）。 | **リスク低減の定量化:** 新デバイス導入による**故障リスクの減少率**を推定します。 |
+| **Weibull AFT** (加速寿命) | **加速係数**を推定（パラメトリック）。 | **寿命の定量化:** 新デバイス導入による**MTBFの延長率**を推定します。 |
 
 ### 2. `main_analysis.py`（静的DiD分析）
-標準的なTWFE構造を用い、全体的な平均治療効果（ATT）の定量化に焦点を当てています。
+標準的な **Two-Way Fixed Effects (TWFE)** 構造を用い、全体的な平均治療効果（ATT）の定量化に焦点を当てています。
+
+#### Two-Way Fixed Effects (TWFE) の役割
+TWFEモデルは、パネルデータ（装置×時間）における**未観測の交絡因子**をコントロールするために、固定効果（ダミー変数）を導入します。
+
+| 固定効果の種類 | 制御する未観測の要因 | このプロジェクトでの対応 |
+| :--- | :--- | :--- |
+| **Entity Fixed Effects** | 装置固有の要因（例：設置場所の環境、初期性能など） | **装置**ごとの固定効果（`C(Tool)` または `C(group)`）により制御 |
+| **Time Fixed Effects** | 全装置に共通する要因（例：サイト全体での停電、コンポーネント供給遅延など） | **時間**ごとの固定効果（`C(Month)` または `C(Date)`）により制御 |
+
+**利用場面:** ユニット（装置）間でベースラインが異なり、かつ時間を通じて全ユニットに共通の影響（ショック）がある場合に、因果効果（ATT）をより頑健に推定するために利用されます。
+
 - **Staggered DiDの実装:** 個体固有の導入時期に合わせた `Post` 変数のタイミング設定が、OLSとGLMの両方に適用されます。
 - **連続値の結果（MTBF）:** OLS回帰を実行します。
 - **カウント値の結果（Rate）:** 負の二項分布GLMを実行し、稼働率の正規化のために `log(生産量)` のオフセットを利用します。
 
 ### 3. `main_event_study.py`（動的分析）
 効果のタイミングとトレンドの可視化に焦点を当てています。
-- **イベントスタディ (PanelOLS):** 導入前後における効果の推移を可視化します。
+- **Event Study (PanelOLS):** 導入前後における効果の推移を可視化します。
 - **平行トレンドの検証:** 導入前 ($K < 0$) の係数が0付近であれば、比較が妥当であると判断できます。
 
 ---
@@ -137,5 +149,5 @@ Specializing in Causal Inference, Survival Analysis, and Reliability Engineering
 
 ## 👨‍💻 Author
 **佐藤 剛 (Go Sato)**
-データサイエンティスト | 外資系半導体装置メーカー AI部
+**データサイエンティスト** | 外資系半導体装置メーカー AI部
 因果推論、生存時間分析、および信頼性工学を専門としています。
