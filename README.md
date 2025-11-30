@@ -33,15 +33,18 @@ To ensure data confidentiality, this project uses a **"Bread Factory" analogy** 
 
 ### 1. `main_survival_analysis.py` (Survival Analysis)
 Focuses on the duration metric and risk modeling. This script calculates the **WBF (Work Between Failures)**, which is the utilization-corrected duration metric.
-- **Kaplan-Meier Estimator (KMF):** Visualizes the survival curve based on WBF.
-- **Cox Proportional Hazards (Cox PH):** Measures the **risk reduction (Hazard Ratio)** of the new device.
-- **Weibull AFT (Accelerated Failure Time):** Estimates the **lifespan extension (Acceleration Factor)**.
+
+| Model | Goal (English) | Role in this Project (Japanese) |
+| :--- | :--- | :--- |
+| **KMF** (Kaplan-Meier) | Estimates the **Survival Function** (non-parametric). | **視覚的な比較:** 新旧デバイス間のWBF（故障間隔）の分布をグラフで示します。 |
+| **Cox PH** (Proportional Hazards) | Estimates the **Hazard Ratio** (risk ratio, semi-parametric). | **リスク低減の定量化:** 新デバイス導入による**故障リスクの減少率**を推定します。 |
+| **Weibull AFT** (Accelerated Failure Time) | Estimates the **Acceleration Factor** (lifespan ratio, parametric). | **寿命の定量化:** 新デバイス導入による**WBFの延長率**を推定します。 |
 
 ### 2. `main_analysis.py` (Static DiD Analysis)
 Focuses on quantifying the overall Average Treatment Effect (ATT) using the standard TWFE structure.
 - **Staggered DiD Implementation:** The core staggered logic (unit-specific `Post` variable timing) is applied to both OLS and GLM.
-    * **Continuous Outcomes (WBF/MTBF):** Uses **OLS** regression. $$Y = \beta_0 + \beta_1 \cdot \text{Treated} + \beta_2 \cdot \text{Post} + \beta_3 \cdot (\text{Treated} \times \text{Post}) + \epsilon$$
-    * **Count Outcomes (Rate):** Uses **Negative Binomial GLM** with the `log(Production)` offset for utilization normalization.
+- **Continuous Outcomes (WBF/MTBF):** Uses **OLS** regression.
+- **Count Outcomes (Rate):** Uses **Negative Binomial GLM** with the `log(Production)` offset for utilization normalization.
 
 ### 3. `main_event_study.py` (Dynamic Analysis)
 Focuses on visualizing the timing of the effect and checking the Parallel Trend assumption.
@@ -82,7 +85,7 @@ python main_event_study.py
 ## 👨‍💻 Author
 
 **Go Sato**
-Data Analyst | AI Department, Semiconductor Equipment Manufacturer
+**Data Scientist** | AI Department, Semiconductor Equipment Manufacturer
 Specializing in Causal Inference, Survival Analysis, and Reliability Engineering.
 
 <br>
@@ -130,9 +133,11 @@ Specializing in Causal Inference, Survival Analysis, and Reliability Engineering
 
 期間指標とリスクモデルの推定に焦点を当てています。このスクリプトは、稼働率補正済みの期間指標である \*\*WBF（生産数ベースの故障間隔）\*\*を算出します。
 
-  - **カプラン・マイヤー推定 (KMF):** WBFに基づく生存曲線を視覚化します。
-  - **Cox比例ハザードモデル (Cox PH):** 新デバイスによる\*\*リスク低減（ハザード比）\*\*を測定します。
-  - **Weibull AFTモデル (AFT):** 新デバイスによる\*\*寿命延長（加速係数）\*\*を推定します。
+| Model | Goal (English) | Role in this Project (Japanese) |
+| :--- | :--- | :--- |
+| **KMF** (Kaplan-Meier) | Estimates the **Survival Function** (non-parametric). | **視覚的な比較:** 新旧デバイス間のWBF（故障間隔）の分布をグラフで示します。 |
+| **Cox PH** (Proportional Hazards) | Estimates the **Hazard Ratio** (risk ratio, semi-parametric). | **リスク低減の定量化:** 新デバイス導入による**故障リスクの減少率**を推定します。 |
+| **Weibull AFT** (Accelerated Failure Time) | Estimates the **Acceleration Factor** (lifespan ratio, parametric). | **寿命の定量化:** 新デバイス導入による**WBFの延長率**を推定します。 |
 
 ### 2\. `main_analysis.py`（静的DiD分析）
 
@@ -173,5 +178,5 @@ python main_event_study.py
 ## 👨‍💻 Author
 
 **佐藤 剛 (Go Sato)**
-データアナリスト | 外資系半導体装置メーカー AI部
+**データサイエンティスト** | 外資系半導体装置メーカー AI部
 因果推論、生存時間分析、および信頼性工学を専門としています。
