@@ -93,4 +93,23 @@ def estimate_missing_utilization(df_prod, df_clean):
             # 欠損していない期間は実測値を使用
             df_imputed.loc[index, 'Loaves_Baked_Imputed'] = row['Loaves_Baked']
             
-    print(f"  Total Imputed Values: {df_imputed['Loaves_Baked_
+    print(f"  Total Imputed Values: {df_imputed['Loaves_Baked_Imputed'].isna().sum()} (Should be 0 if clean)")
+    return df_imputed[['Tool', 'Month', 'Loaves_Baked', 'Loaves_Baked_Imputed', 'Material_Consumed_Kg']]
+
+# ==========================================
+# 3. Main Execution
+# ==========================================
+if __name__ == "__main__":
+    df_prod_raw, df_clean_log = generate_hybrid_dummy_data()
+    
+    print("--- 1. Raw Data Status (Loaves Baked) ---")
+    print(df_prod_raw[df_prod_raw['Loaves_Baked'].isna()].head())
+    print(f"\nTotal Missing Loaves Baked Counts: {df_prod_raw['Loaves_Baked'].isna().sum()}")
+    
+    df_results = estimate_missing_utilization(df_prod_raw, df_clean_log)
+    
+    print("\n--- 2. Imputation Results (Monthly) ---")
+    print(df_results.head(10))
+    
+    print("\n[Conclusion]")
+    print(f"The 'Loaves_Baked_Imputed' column now contains estimated values where 'Loaves_Baked' was missing, based on the Material_Consumed_Kg proxy.")
